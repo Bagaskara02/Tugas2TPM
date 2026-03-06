@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'models/data.dart';
-import 'home.dart';
+import '../models/data.dart';
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,18 +15,24 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscurePassword = true;
 
   void _login() {
-    String username = _usernameController.text;
-    String password = _passwordController.text;
+    String username = _usernameController.text.trim();
+    String password = _passwordController.text.trim();
 
-    if (username == user1.username && password == user1.password) {
+    // Cari anggota berdasarkan NIM (username) dan 3 digit terakhir NIM (password)
+    final anggota = kelompokData.cast<AnggotaKelompok?>().firstWhere(
+      (a) => a!.nim == username && a.password == password,
+      orElse: () => null,
+    );
+
+    if (anggota != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage(nama: user1.nama)),
+        MaterialPageRoute(builder: (context) => HomePage(nama: anggota.nama)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Login Gagal: Username atau Password salah'),
+          content: Text('Login Gagal: NIM atau Password salah'),
           backgroundColor: Colors.red,
         ),
       );
@@ -68,8 +74,8 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     width: 80,
                     height: 80,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE8E5F3),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFE8E5F3),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
@@ -90,13 +96,17 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 6),
+                  Text(
+                    'Masukkan NIM dan Password',
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                  ),
                   const SizedBox(height: 32),
 
-                  // Username label
+                  // NIM label
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Username',
+                      'NIM',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -105,17 +115,18 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Username field
+                  // NIM field
                   TextField(
                     controller: _usernameController,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      hintText: 'Enter your username',
+                      hintText: 'Masukkan NIM',
                       hintStyle: TextStyle(
                         color: Colors.grey.shade400,
                         fontSize: 14,
                       ),
                       prefixIcon: Icon(
-                        Icons.person_outline,
+                        Icons.badge_outlined,
                         color: Colors.grey.shade400,
                         size: 22,
                       ),
@@ -162,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
-                      hintText: 'Enter your password',
+                      hintText: '3 digit terakhir NIM',
                       hintStyle: TextStyle(
                         color: Colors.grey.shade400,
                         fontSize: 14,
@@ -221,7 +232,9 @@ class _LoginPageState extends State<LoginPage> {
                         backgroundColor: const Color(0xFF5C6BC0),
                         foregroundColor: Colors.white,
                         elevation: 4,
-                        shadowColor: const Color(0xFF5C6BC0).withValues(alpha: 0.4),
+                        shadowColor: const Color(
+                          0xFF5C6BC0,
+                        ).withValues(alpha: 0.4),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(28),
                         ),

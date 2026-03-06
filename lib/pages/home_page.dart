@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
+import 'login_page.dart';
 import 'stopwatch_page.dart';
+import 'data_kelompok_page.dart';
+import 'piramid_page.dart';
+import 'total_angka_page.dart';
 
 class HomePage extends StatelessWidget {
   final String nama;
@@ -61,7 +64,12 @@ class HomePage extends StatelessWidget {
                       icon: Icons.groups_rounded,
                       label: 'Data Kelompok',
                       onTap: () {
-                        _showPlaceholder(context, 'Data Kelompok');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DataKelompokPage(),
+                          ),
+                        );
                       },
                     ),
                     _buildMenuItem(
@@ -86,7 +94,12 @@ class HomePage extends StatelessWidget {
                       icon: Icons.format_list_numbered_rounded,
                       label: 'Total Angka',
                       onTap: () {
-                        _showPlaceholder(context, 'Total Angka');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const TotalAngkaPage(),
+                          ),
+                        );
                       },
                     ),
                     _buildMenuItem(
@@ -107,7 +120,12 @@ class HomePage extends StatelessWidget {
                       icon: Icons.architecture_rounded,
                       label: 'Luas & Volume\nPiramid',
                       onTap: () {
-                        _showPlaceholder(context, 'Luas & Volume Piramid');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PiramidPage(),
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -165,11 +183,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     )
-                  : Icon(
-                      icon,
-                      color: const Color(0xFF5C6BC0),
-                      size: 28,
-                    ),
+                  : Icon(icon, color: const Color(0xFF5C6BC0), size: 28),
             ),
             const Spacer(),
             // Label
@@ -219,10 +233,7 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   'Segera hadir',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade500,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
                 ),
               ],
             ),
