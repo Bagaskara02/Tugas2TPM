@@ -90,38 +90,83 @@ class _VolumeTabState extends State<_VolumeTab> {
   double _volume = 0;
   List<String> _steps = [];
 
+  String _formatNumber(double n) {
+    if (n.isInfinite || n.isNaN) return n.toString();
+    if (n.abs() >= 1e9 || (n != 0 && n.abs() <= 1e-4)) {
+      return n.toStringAsExponential(3);
+    }
+    if (n == n.roundToDouble()) {
+      return n.toInt().toString();
+    }
+    return n.toStringAsFixed(2);
+  }
+
   void _calculate() {
     double luasAlas = 0;
-    double tinggi = double.tryParse(_tinggiController.text) ?? 0;
+
+    final textTinggi = _tinggiController.text.trim();
+    if (textTinggi.isEmpty) {
+      _showError('Mohon isi tinggi piramid terlebih dahulu');
+      return;
+    }
+    double tinggi = double.tryParse(textTinggi) ?? 0;
+
     List<String> steps = [];
 
     if (_bentukAlas == 'persegi') {
-      double sisi = double.tryParse(_sisiController.text) ?? 0;
-      if (sisi <= 0 || tinggi <= 0) {
-        _showError('Masukkan semua nilai dengan benar (> 0)');
+      final textSisi = _sisiController.text.trim();
+      if (textSisi.isEmpty) {
+        _showError('Mohon isi panjang sisi terlebih dahulu');
         return;
       }
+      double sisi = double.tryParse(textSisi) ?? 0;
+
+      if (sisi <= 0 || tinggi <= 0) {
+        _showError('Masukkan angka yang valid dan lebih dari 0');
+        return;
+      }
+      if (sisi > 1e9 || tinggi > 1e9) {
+        _showError('Angka terlalu besar (Maksimal 1 Miliar)');
+        return;
+      }
+
       luasAlas = sisi * sisi;
       steps.add('Langkah 1: Hitung Luas Alas (Persegi)');
-      steps.add('L_alas = sisi × sisi = $sisi × $sisi = $luasAlas');
+      steps.add(
+        'L_alas = sisi × sisi = ${_formatNumber(sisi)} × ${_formatNumber(sisi)} = ${_formatNumber(luasAlas)}',
+      );
     } else {
-      double panjang = double.tryParse(_panjangController.text) ?? 0;
-      double lebar = double.tryParse(_lebarController.text) ?? 0;
-      if (panjang <= 0 || lebar <= 0 || tinggi <= 0) {
-        _showError('Masukkan semua nilai dengan benar (> 0)');
+      final textPanjang = _panjangController.text.trim();
+      final textLebar = _lebarController.text.trim();
+      if (textPanjang.isEmpty || textLebar.isEmpty) {
+        _showError('Mohon isi panjang dan lebar alas terlebih dahulu');
         return;
       }
+      double panjang = double.tryParse(textPanjang) ?? 0;
+      double lebar = double.tryParse(textLebar) ?? 0;
+
+      if (panjang <= 0 || lebar <= 0 || tinggi <= 0) {
+        _showError('Masukkan angka yang valid dan lebih dari 0');
+        return;
+      }
+      if (panjang > 1e9 || lebar > 1e9 || tinggi > 1e9) {
+        _showError('Angka terlalu besar (Maksimal 1 Miliar)');
+        return;
+      }
+
       luasAlas = panjang * lebar;
       steps.add('Langkah 1: Hitung Luas Alas (Persegi Panjang)');
-      steps.add('L_alas = panjang × lebar = $panjang × $lebar = $luasAlas');
+      steps.add(
+        'L_alas = panjang × lebar = ${_formatNumber(panjang)} × ${_formatNumber(lebar)} = ${_formatNumber(luasAlas)}',
+      );
     }
 
     double volume = (1.0 / 3.0) * luasAlas * tinggi;
     steps.add('');
     steps.add('Langkah 2: Hitung Volume Piramid');
     steps.add('V = ⅓ × L_alas × tinggi');
-    steps.add('V = ⅓ × $luasAlas × $tinggi');
-    steps.add('V = ${volume.toStringAsFixed(2)}');
+    steps.add('V = ⅓ × ${_formatNumber(luasAlas)} × ${_formatNumber(tinggi)}');
+    steps.add('V = ${_formatNumber(volume)}');
 
     setState(() {
       _luasAlas = luasAlas;
@@ -247,17 +292,20 @@ class _VolumeTabState extends State<_VolumeTab> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    _volume.toStringAsFixed(2),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      _formatNumber(_volume),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Luas Alas: ${_luasAlas.toStringAsFixed(2)}',
+                    'Luas Alas: ${_formatNumber(_luasAlas)}',
                     style: const TextStyle(color: Colors.white60, fontSize: 13),
                   ),
                 ],
@@ -420,40 +468,88 @@ class _LuasTabState extends State<_LuasTab> {
   double _luasTotal = 0;
   List<String> _steps = [];
 
+  String _formatNumber(double n) {
+    if (n.isInfinite || n.isNaN) return n.toString();
+    if (n.abs() >= 1e9 || (n != 0 && n.abs() <= 1e-4)) {
+      return n.toStringAsExponential(3);
+    }
+    if (n == n.roundToDouble()) {
+      return n.toInt().toString();
+    }
+    return n.toStringAsFixed(2);
+  }
+
   void _calculate() {
     double luasAlas = 0;
     double kelilingAlas = 0;
-    double tinggiMiring = double.tryParse(_tinggiMiringController.text) ?? 0;
+
+    final textTinggiMiring = _tinggiMiringController.text.trim();
+    if (textTinggiMiring.isEmpty) {
+      _showError('Mohon isi tinggi miring piramid terlebih dahulu');
+      return;
+    }
+    double tinggiMiring = double.tryParse(textTinggiMiring) ?? 0;
+
     List<String> steps = [];
 
     if (_bentukAlas == 'persegi') {
-      double sisi = double.tryParse(_sisiController.text) ?? 0;
-      if (sisi <= 0 || tinggiMiring <= 0) {
-        _showError('Masukkan semua nilai dengan benar (> 0)');
+      final textSisi = _sisiController.text.trim();
+      if (textSisi.isEmpty) {
+        _showError('Mohon isi panjang sisi terlebih dahulu');
         return;
       }
+      double sisi = double.tryParse(textSisi) ?? 0;
+
+      if (sisi <= 0 || tinggiMiring <= 0) {
+        _showError('Masukkan angka yang valid dan lebih dari 0');
+        return;
+      }
+      if (sisi > 1e9 || tinggiMiring > 1e9) {
+        _showError('Angka terlalu besar (Maksimal 1 Miliar)');
+        return;
+      }
+
       luasAlas = sisi * sisi;
       kelilingAlas = 4 * sisi;
       steps.add('Langkah 1: Hitung Luas Alas (Persegi)');
-      steps.add('L_alas = sisi × sisi = $sisi × $sisi = $luasAlas');
-      steps.add('');
-      steps.add('Langkah 2: Hitung Keliling Alas');
-      steps.add('K_alas = 4 × sisi = 4 × $sisi = $kelilingAlas');
-    } else {
-      double panjang = double.tryParse(_panjangController.text) ?? 0;
-      double lebar = double.tryParse(_lebarController.text) ?? 0;
-      if (panjang <= 0 || lebar <= 0 || tinggiMiring <= 0) {
-        _showError('Masukkan semua nilai dengan benar (> 0)');
-        return;
-      }
-      luasAlas = panjang * lebar;
-      kelilingAlas = 2 * (panjang + lebar);
-      steps.add('Langkah 1: Hitung Luas Alas (Persegi Panjang)');
-      steps.add('L_alas = panjang × lebar = $panjang × $lebar = $luasAlas');
+      steps.add(
+        'L_alas = sisi × sisi = ${_formatNumber(sisi)} × ${_formatNumber(sisi)} = ${_formatNumber(luasAlas)}',
+      );
       steps.add('');
       steps.add('Langkah 2: Hitung Keliling Alas');
       steps.add(
-        'K_alas = 2 × (p + l) = 2 × ($panjang + $lebar) = $kelilingAlas',
+        'K_alas = 4 × sisi = 4 × ${_formatNumber(sisi)} = ${_formatNumber(kelilingAlas)}',
+      );
+    } else {
+      final textPanjang = _panjangController.text.trim();
+      final textLebar = _lebarController.text.trim();
+      if (textPanjang.isEmpty || textLebar.isEmpty) {
+        _showError('Mohon isi panjang dan lebar alas terlebih dahulu');
+        return;
+      }
+
+      double panjang = double.tryParse(textPanjang) ?? 0;
+      double lebar = double.tryParse(textLebar) ?? 0;
+
+      if (panjang <= 0 || lebar <= 0 || tinggiMiring <= 0) {
+        _showError('Masukkan angka yang valid dan lebih dari 0');
+        return;
+      }
+      if (panjang > 1e9 || lebar > 1e9 || tinggiMiring > 1e9) {
+        _showError('Angka terlalu besar (Maksimal 1 Miliar)');
+        return;
+      }
+
+      luasAlas = panjang * lebar;
+      kelilingAlas = 2 * (panjang + lebar);
+      steps.add('Langkah 1: Hitung Luas Alas (Persegi Panjang)');
+      steps.add(
+        'L_alas = panjang × lebar = ${_formatNumber(panjang)} × ${_formatNumber(lebar)} = ${_formatNumber(luasAlas)}',
+      );
+      steps.add('');
+      steps.add('Langkah 2: Hitung Keliling Alas');
+      steps.add(
+        'K_alas = 2 × (p + l) = 2 × (${_formatNumber(panjang)} + ${_formatNumber(lebar)}) = ${_formatNumber(kelilingAlas)}',
       );
     }
 
@@ -464,13 +560,13 @@ class _LuasTabState extends State<_LuasTab> {
     steps.add('Langkah 3: Hitung Luas Selimut');
     steps.add('L_selimut = ½ × K_alas × tinggi_miring');
     steps.add(
-      'L_selimut = ½ × $kelilingAlas × $tinggiMiring = ${luasSelimut.toStringAsFixed(2)}',
+      'L_selimut = ½ × ${_formatNumber(kelilingAlas)} × ${_formatNumber(tinggiMiring)} = ${_formatNumber(luasSelimut)}',
     );
     steps.add('');
     steps.add('Langkah 4: Hitung Luas Permukaan Total');
     steps.add('L_total = L_alas + L_selimut');
     steps.add(
-      'L_total = $luasAlas + ${luasSelimut.toStringAsFixed(2)} = ${luasTotal.toStringAsFixed(2)}',
+      'L_total = ${_formatNumber(luasAlas)} + ${_formatNumber(luasSelimut)} = ${_formatNumber(luasTotal)}',
     );
 
     setState(() {
@@ -596,17 +692,20 @@ class _LuasTabState extends State<_LuasTab> {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(
-                    _luasTotal.toStringAsFixed(2),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      _formatNumber(_luasTotal),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Luas Alas: ${_luasAlas.toStringAsFixed(2)}',
+                    'Luas Alas: ${_formatNumber(_luasAlas)}',
                     style: const TextStyle(color: Colors.white60, fontSize: 13),
                   ),
                 ],

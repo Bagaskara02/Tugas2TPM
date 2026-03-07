@@ -68,7 +68,21 @@ class _GanjilGenapPrimaPageState extends State<GanjilGenapPrimaPage>
     if (angka == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Input harus berupa bilangan bulat'),
+          content: const Text('Input harus berupa bilangan bulat valid'),
+          backgroundColor: Colors.red.shade400,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+      return;
+    }
+
+    if (angka > 1000000000) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Angka terlalu besar (Maksimal 1 Miliar)'),
           backgroundColor: Colors.red.shade400,
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(

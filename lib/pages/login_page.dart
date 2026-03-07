@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
 
                   // Title
                   const Text(
-                    'Calculate App',
+                    'Aplikasi Kalkulasi',
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,

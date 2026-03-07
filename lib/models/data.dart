@@ -4,8 +4,8 @@ class AnggotaKelompok {
 
   AnggotaKelompok({required this.nama, required this.nim});
 
-  /// Password = 3 digit terakhir NIM
-  String get password => nim.substring(nim.length - 3);
+  /// Password = 3 digit terakhir NIM (atau seluruh NIM jika kurang dari 3 digit)
+  String get password => nim.length >= 3 ? nim.substring(nim.length - 3) : nim;
 }
 
 final List<AnggotaKelompok> kelompokData = [

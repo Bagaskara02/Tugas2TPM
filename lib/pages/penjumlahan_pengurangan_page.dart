@@ -42,8 +42,10 @@ class _PenjumlahanPenguranganPageState extends State<PenjumlahanPenguranganPage>
   }
 
   bool _validateInput() {
-    if (_angka1Controller.text.trim().isEmpty ||
-        _angka2Controller.text.trim().isEmpty) {
+    final text1 = _angka1Controller.text.trim();
+    final text2 = _angka2Controller.text.trim();
+
+    if (text1.isEmpty || text2.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Masukkan kedua angka terlebih dahulu'),
@@ -57,8 +59,8 @@ class _PenjumlahanPenguranganPageState extends State<PenjumlahanPenguranganPage>
       return false;
     }
 
-    final a = double.tryParse(_angka1Controller.text.trim());
-    final b = double.tryParse(_angka2Controller.text.trim());
+    final a = double.tryParse(text1);
+    final b = double.tryParse(text2);
 
     if (a == null || b == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -100,6 +102,10 @@ class _PenjumlahanPenguranganPageState extends State<PenjumlahanPenguranganPage>
   }
 
   String _formatNumber(double n) {
+    if (n.isInfinite || n.isNaN) return n.toString();
+    if (n.abs() >= 1e12 || (n != 0 && n.abs() <= 1e-5)) {
+      return n.toStringAsExponential(4);
+    }
     if (n == n.roundToDouble()) {
       return n.toInt().toString();
     }
@@ -433,12 +439,14 @@ class _PenjumlahanPenguranganPageState extends State<PenjumlahanPenguranganPage>
                                   color: Colors.grey,
                                 ),
                               ),
-                              Text(
-                                _formatNumber(_hasil),
-                                style: const TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF5C6BC0),
+                              Expanded(
+                                child: Text(
+                                  _formatNumber(_hasil),
+                                  style: const TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF5C6BC0),
+                                  ),
                                 ),
                               ),
                             ],
@@ -486,12 +494,15 @@ class _PenjumlahanPenguranganPageState extends State<PenjumlahanPenguranganPage>
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            _formatNumber(_hasil),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 42,
-                              fontWeight: FontWeight.bold,
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              _formatNumber(_hasil),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 42,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],

@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Calculate App',
+                    'Aplikasi Kalkulasi',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,

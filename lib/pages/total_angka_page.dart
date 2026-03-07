@@ -48,29 +48,56 @@ class _TotalAngkaPageState extends State<TotalAngkaPage>
       return;
     }
 
-    // Validasi input: hanya boleh memuat angka dan tanda (, . ;)
-    if (!RegExp(r'^[0-9,.;]+$').hasMatch(text)) {
+    // Valid format: angka diikuti opsional (pemisah dan maksimal 1 spasi, lalu angka).
+    // Menolak pemisah ganda atau spasi berlebih setelah koma.
+    if (!RegExp(r'^\d+([,.;] ?\d+)*$').hasMatch(text)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Hanya diperbolehkan angka dan pemisah (, . ;)'),
+          content: const Text(
+            'Format tidak valid. Pastikan tidak ada koma/spasi berlebih di akhir angka. Contoh: 1, 2; 3',
+          ),
           backgroundColor: Colors.red.shade400,
         ),
       );
       return;
     }
 
-    // Extract numbers from input (separated by allowed characters)
     final matches = RegExp(r'\d+').allMatches(text);
-    final digits = matches.map((m) => int.parse(m.group(0)!)).toList();
-
-    if (digits.isEmpty) {
+    if (matches.length > 50) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Input tidak mengandung angka'),
+          content: const Text('Terlalu banyak angka (Maksimal 50 angka)'),
           backgroundColor: Colors.red.shade400,
         ),
       );
       return;
+    }
+
+    final digits = <int>[];
+    for (var m in matches) {
+      final str = m.group(0)!;
+      if (str.length > 15) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Terdapat angka terlalu panjang (maks 15 digit)',
+            ),
+            backgroundColor: Colors.red.shade400,
+          ),
+        );
+        return;
+      }
+      final val = int.tryParse(str);
+      if (val == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Angka terlalu besar atau tidak valid'),
+            backgroundColor: Colors.red.shade400,
+          ),
+        );
+        return;
+      }
+      digits.add(val);
     }
 
     final total = digits.fold(0, (sum, d) => sum + d);
@@ -246,57 +273,6 @@ class _TotalAngkaPageState extends State<TotalAngkaPage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Angka yang ditemukan',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // Bubble wrap
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: List.generate(_digits.length, (index) {
-                        const color = Color(0xFF5C6BC0);
-                        return TweenAnimationBuilder<double>(
-                          tween: Tween(begin: 0.0, end: 1.0),
-                          duration: Duration(milliseconds: 300 + (index * 80)),
-                          curve: Curves.easeOutBack,
-                          builder: (context, value, child) {
-                            return Transform.scale(scale: value, child: child);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            height: 52,
-                            constraints: const BoxConstraints(minWidth: 52),
-                            decoration: BoxDecoration(
-                              color: color.withValues(alpha: 0.15),
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: color.withValues(alpha: 0.4),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                '${_digits[index]}',
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: color,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
-                    const SizedBox(height: 20),
-
                     // Step by step
                     Container(
                       width: double.infinity,
