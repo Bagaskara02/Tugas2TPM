@@ -4,6 +4,8 @@ import 'stopwatch_page.dart';
 import 'data_kelompok_page.dart';
 import 'piramid_page.dart';
 import 'total_angka_page.dart';
+import 'penjumlahan_pengurangan_page.dart';
+import 'ganjil_genap_prima_page.dart';
 
 class HomePage extends StatelessWidget {
   final String nama;
@@ -77,7 +79,13 @@ class HomePage extends StatelessWidget {
                       icon: Icons.calculate_rounded,
                       label: 'Penjumlahan &\nPengurangan',
                       onTap: () {
-                        _showPlaceholder(context, 'Penjumlahan & Pengurangan');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const PenjumlahanPenguranganPage(),
+                          ),
+                        );
                       },
                     ),
                     _buildMenuItem(
@@ -86,7 +94,12 @@ class HomePage extends StatelessWidget {
                       label: 'Ganjil/Genap &\nPrima',
                       iconText: '0',
                       onTap: () {
-                        _showPlaceholder(context, 'Ganjil/Genap & Prima');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const GanjilGenapPrimaPage(),
+                          ),
+                        );
                       },
                     ),
                     _buildMenuItem(
@@ -197,47 +210,6 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  void _showPlaceholder(BuildContext context, String title) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: Text(title),
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black87,
-            elevation: 0,
-          ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.construction_rounded,
-                  size: 64,
-                  color: Colors.grey.shade400,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Halaman $title',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Segera hadir',
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );
