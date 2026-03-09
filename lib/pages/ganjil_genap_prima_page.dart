@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:math';
 
 class GanjilGenapPrimaPage extends StatefulWidget {
@@ -182,6 +183,9 @@ class _GanjilGenapPrimaPageState extends State<GanjilGenapPrimaPage>
             TextField(
               controller: _inputController,
               keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'  +')),
+              ],
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/data.dart';
 import 'home_page.dart';
 
@@ -119,6 +120,9 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     controller: _usernameController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(RegExp(r'  +')),
+                    ],
                     decoration: InputDecoration(
                       hintText: 'Masukkan NIM',
                       hintStyle: TextStyle(
@@ -172,6 +176,9 @@ class _LoginPageState extends State<LoginPage> {
                   TextField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.deny(RegExp(r'  +')),
+                    ],
                     decoration: InputDecoration(
                       hintText: '3 digit terakhir NIM',
                       hintStyle: TextStyle(

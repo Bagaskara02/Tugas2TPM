@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PiramidPage extends StatefulWidget {
   const PiramidPage({super.key});
@@ -415,6 +416,7 @@ class _VolumeTabState extends State<_VolumeTab> {
     return TextField(
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'  +'))],
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
@@ -815,6 +817,7 @@ class _LuasTabState extends State<_LuasTab> {
     return TextField(
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      inputFormatters: [FilteringTextInputFormatter.deny(RegExp(r'  +'))],
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(

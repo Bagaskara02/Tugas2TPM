@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TotalAngkaPage extends StatefulWidget {
   const TotalAngkaPage({super.key});
@@ -48,56 +49,87 @@ class _TotalAngkaPageState extends State<TotalAngkaPage>
       return;
     }
 
-    // Valid format: angka diikuti opsional (pemisah dan maksimal 1 spasi, lalu angka).
-    // Menolak pemisah ganda atau spasi berlebih setelah koma.
-    if (!RegExp(r'^\d+([,.;] ?\d+)*$').hasMatch(text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            'Format tidak valid. Pastikan tidak ada koma/spasi berlebih di akhir angka. Contoh: 1, 2; 3',
-          ),
-          backgroundColor: Colors.red.shade400,
-        ),
-      );
-      return;
-    }
-
-    final matches = RegExp(r'\d+').allMatches(text);
-    if (matches.length > 50) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Terlalu banyak angka (Maksimal 50 angka)'),
-          backgroundColor: Colors.red.shade400,
-        ),
-      );
-      return;
-    }
+    // Cek apakah input hanya berisi angka (tanpa pemisah)
+    final bool hasSeparator = RegExp(r'[,.;]').hasMatch(text);
 
     final digits = <int>[];
-    for (var m in matches) {
-      final str = m.group(0)!;
-      if (str.length > 15) {
+
+    if (!hasSeparator) {
+      // Tidak ada pemisah: pecah setiap digit satu per satu
+      // Contoh: 123456 -> 1, 2, 3, 4, 5, 6
+      if (!RegExp(r'^\d+$').hasMatch(text)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text(
-              'Terdapat angka terlalu panjang (maks 15 digit)',
+              'Format tidak valid. Masukkan angka saja atau gunakan pemisah (, . ;)',
             ),
             backgroundColor: Colors.red.shade400,
           ),
         );
         return;
       }
-      final val = int.tryParse(str);
-      if (val == null) {
+      if (text.length > 50) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Angka terlalu besar atau tidak valid'),
+            content: const Text('Terlalu banyak digit (Maksimal 50 digit)'),
             backgroundColor: Colors.red.shade400,
           ),
         );
         return;
       }
-      digits.add(val);
+      for (var ch in text.split('')) {
+        digits.add(int.parse(ch));
+      }
+    } else {
+      // Ada pemisah: gunakan logika lama
+      if (!RegExp(r'^\d+([,.;] ?\d+)*$').hasMatch(text)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Format tidak valid. Pastikan tidak ada koma/spasi berlebih di akhir angka. Contoh: 1, 2; 3',
+            ),
+            backgroundColor: Colors.red.shade400,
+          ),
+        );
+        return;
+      }
+
+      final matches = RegExp(r'\d+').allMatches(text);
+      if (matches.length > 50) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Terlalu banyak angka (Maksimal 50 angka)'),
+            backgroundColor: Colors.red.shade400,
+          ),
+        );
+        return;
+      }
+
+      for (var m in matches) {
+        final str = m.group(0)!;
+        if (str.length > 15) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text(
+                'Terdapat angka terlalu panjang (maks 15 digit)',
+              ),
+              backgroundColor: Colors.red.shade400,
+            ),
+          );
+          return;
+        }
+        final val = int.tryParse(str);
+        if (val == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Angka terlalu besar atau tidak valid'),
+              backgroundColor: Colors.red.shade400,
+            ),
+          );
+          return;
+        }
+        digits.add(val);
+      }
     }
 
     final total = digits.fold(0, (sum, d) => sum + d);
@@ -188,7 +220,10 @@ class _TotalAngkaPageState extends State<TotalAngkaPage>
             const SizedBox(height: 8),
             TextField(
               controller: _inputController,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'  +')),
+              ],
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,

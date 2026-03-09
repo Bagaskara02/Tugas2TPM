@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PenjumlahanPenguranganPage extends StatefulWidget {
   const PenjumlahanPenguranganPage({super.key});
@@ -192,6 +193,9 @@ class _PenjumlahanPenguranganPageState extends State<PenjumlahanPenguranganPage>
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'  +')),
+              ],
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -249,6 +253,9 @@ class _PenjumlahanPenguranganPageState extends State<PenjumlahanPenguranganPage>
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
+              inputFormatters: [
+                FilteringTextInputFormatter.deny(RegExp(r'  +')),
+              ],
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
