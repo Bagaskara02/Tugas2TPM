@@ -10,7 +10,9 @@ class StopwatchPage extends StatefulWidget {
 
 class _StopwatchPageState extends State<StopwatchPage> {
   Timer? _timer;
-  int _elapsedMilliseconds = 0;
+
+  final int _startMilliseconds = 0;
+  late int _elapsedMilliseconds = _startMilliseconds;
   bool _isRunning = false;
   final List<_LapData> _laps = [];
 

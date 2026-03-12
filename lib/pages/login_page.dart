@@ -71,21 +71,6 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Graduation cap icon in circle
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFE8E5F3),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.school_rounded,
-                      size: 40,
-                      color: Color(0xFF5C6BC0),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
 
                   // Title
                   const Text(
@@ -227,7 +212,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 25),
 
                   // Login button
                   SizedBox(
