@@ -12,7 +12,6 @@ class _TotalAngkaPageState extends State<TotalAngkaPage>
   final _inputController = TextEditingController();
   bool _showResult = false;
   
-  // Ubah tipe data menjadi String untuk menyimpan karakter angka yang ditemukan
   List<String> _foundDigits = []; 
   int _total = 0;
   
@@ -51,15 +50,13 @@ class _TotalAngkaPageState extends State<TotalAngkaPage>
       return;
     }
 
-    // LOGIKA BARU: Cari semua karakter angka (0-9) di dalam teks
     final matches = RegExp(r'\d').allMatches(text);
     
-    // Ekstrak angka-angka tersebut ke dalam sebuah list
     final extractedDigits = matches.map((m) => m.group(0)!).toList();
 
     setState(() {
       _foundDigits = extractedDigits;
-      _total = extractedDigits.length; // Total adalah jumlah angka yang ditemukan
+      _total = extractedDigits.length;
       _showResult = true;
     });
 
