@@ -9,45 +9,53 @@ class StopwatchPage extends StatefulWidget {
 }
 
 class _StopwatchPageState extends State<StopwatchPage> {
+  final Stopwatch _stopwatch = Stopwatch();
   Timer? _timer;
 
   final int _startMilliseconds = 0;
+
   late int _elapsedMilliseconds = _startMilliseconds;
-  bool _isRunning = false;
+  
   final List<_LapData> _laps = [];
+
+  bool get _isRunning => _stopwatch.isRunning;
 
   void _start() {
     if (_isRunning) return;
-    setState(() {
-      _isRunning = true;
-    });
+    
+    _stopwatch.start();
+    
     _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       setState(() {
-        _elapsedMilliseconds += 10;
+        _elapsedMilliseconds = _startMilliseconds + _stopwatch.elapsedMilliseconds;
       });
     });
   }
 
   void _stop() {
+    _stopwatch.stop();
     _timer?.cancel();
-    setState(() {
-      _isRunning = false;
-    });
+    setState(() {});
   }
 
   void _reset() {
+    _stopwatch.reset();
+    _stopwatch.stop();
     _timer?.cancel();
+    
     setState(() {
-      _elapsedMilliseconds = 0;
-      _isRunning = false;
+      _elapsedMilliseconds = _startMilliseconds; 
       _laps.clear();
     });
   }
 
   void _lap() {
     if (!_isRunning) return;
-    final prevTotal = _laps.isEmpty ? 0 : _laps.last.totalMs;
+    
+    final prevTotal = _laps.isEmpty ? _startMilliseconds : _laps.last.totalMs;
+
     final lapMs = _elapsedMilliseconds - prevTotal;
+    
     setState(() {
       _laps.add(
         _LapData(
@@ -63,6 +71,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
     int seconds = (ms ~/ 1000) % 60;
     int minutes = (ms ~/ 60000) % 60;
     int hours = ms ~/ 3600000;
+    
     return '${hours.toString().padLeft(2, '0')}:'
         '${minutes.toString().padLeft(2, '0')}:'
         '${seconds.toString().padLeft(2, '0')}';
@@ -76,6 +85,7 @@ class _StopwatchPageState extends State<StopwatchPage> {
   @override
   void dispose() {
     _timer?.cancel();
+    _stopwatch.stop();
     super.dispose();
   }
 
