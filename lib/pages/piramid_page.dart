@@ -483,7 +483,7 @@ class _LuasTabState extends State<_LuasTab> {
 
   void _calculate() {
     double luasAlas = 0;
-    double kelilingAlas = 0;
+    double luasSelimut = 0;
 
     final textTinggiMiring = _tinggiMiringController.text.trim();
     if (textTinggiMiring.isEmpty) {
@@ -512,15 +512,16 @@ class _LuasTabState extends State<_LuasTab> {
       }
 
       luasAlas = sisi * sisi;
-      kelilingAlas = 4 * sisi;
+      luasSelimut = 4 * (0.5 * sisi * tinggiMiring);
       steps.add('Langkah 1: Hitung Luas Alas (Persegi)');
       steps.add(
         'L_alas = sisi × sisi = ${_formatNumber(sisi)} × ${_formatNumber(sisi)} = ${_formatNumber(luasAlas)}',
       );
       steps.add('');
-      steps.add('Langkah 2: Hitung Keliling Alas');
+      steps.add('Langkah 2: Hitung Luas Selimut');
+      steps.add('L_selimut = 4 × (½ × sisi × tinggi_miring)');
       steps.add(
-        'K_alas = 4 × sisi = 4 × ${_formatNumber(sisi)} = ${_formatNumber(kelilingAlas)}',
+        'L_selimut = 4 × (½ × ${_formatNumber(sisi)} × ${_formatNumber(tinggiMiring)}) = ${_formatNumber(luasSelimut)}',
       );
     } else {
       final textPanjang = _panjangController.text.trim();
@@ -543,29 +544,31 @@ class _LuasTabState extends State<_LuasTab> {
       }
 
       luasAlas = panjang * lebar;
-      kelilingAlas = 2 * (panjang + lebar);
+      double luasSelimut1 = 2 * (0.5 * panjang * tinggiMiring);
+      double luasSelimut2 = 2 * (0.5 * lebar * tinggiMiring);
+      luasSelimut = luasSelimut1 + luasSelimut2;
+      
       steps.add('Langkah 1: Hitung Luas Alas (Persegi Panjang)');
       steps.add(
         'L_alas = panjang × lebar = ${_formatNumber(panjang)} × ${_formatNumber(lebar)} = ${_formatNumber(luasAlas)}',
       );
       steps.add('');
-      steps.add('Langkah 2: Hitung Keliling Alas');
+      steps.add('Langkah 2: Hitung Luas Selimut');
       steps.add(
-        'K_alas = 2 × (p + l) = 2 × (${_formatNumber(panjang)} + ${_formatNumber(lebar)}) = ${_formatNumber(kelilingAlas)}',
+        'L_selimut1 = 2 × (½ × panjang × tinggi_miring) = ${_formatNumber(luasSelimut1)}',
+      );
+      steps.add(
+        'L_selimut2 = 2 × (½ × lebar × tinggi_miring) = ${_formatNumber(luasSelimut2)}',
+      );
+      steps.add(
+        'L_selimut total = L_selimut1 + L_selimut2 = ${_formatNumber(luasSelimut1)} + ${_formatNumber(luasSelimut2)} = ${_formatNumber(luasSelimut)}',
       );
     }
 
-    double luasSelimut = 0.5 * kelilingAlas * tinggiMiring;
     double luasTotal = luasAlas + luasSelimut;
 
     steps.add('');
-    steps.add('Langkah 3: Hitung Luas Selimut');
-    steps.add('L_selimut = ½ × K_alas × tinggi_miring');
-    steps.add(
-      'L_selimut = ½ × ${_formatNumber(kelilingAlas)} × ${_formatNumber(tinggiMiring)} = ${_formatNumber(luasSelimut)}',
-    );
-    steps.add('');
-    steps.add('Langkah 4: Hitung Luas Permukaan Total');
+    steps.add('Langkah 3: Hitung Luas Permukaan Total');
     steps.add('L_total = L_alas + L_selimut');
     steps.add(
       'L_total = ${_formatNumber(luasAlas)} + ${_formatNumber(luasSelimut)} = ${_formatNumber(luasTotal)}',
